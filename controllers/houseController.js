@@ -1,5 +1,6 @@
 const House = require("../models/House");
 const Room = require("../models/Room");
+const Bed = require("../models/Bed");
 
 // Lấy danh sách tất cả nhà trọ
 const getHouses = async (req, res) => {
@@ -11,6 +12,11 @@ const getHouses = async (req, res) => {
     }
 };
 
+/**
+ * Lấy thông tin của 1 nhà trọ
+ * @param {string} req.params.houseId - id của nhà trọ
+ * @return {object} - Thông tin của nhà trọ
+ */
 const getHouseInfo = async (req, res) => {
     try {
         const { houseId } = req.params;
@@ -24,12 +30,22 @@ const getHouseInfo = async (req, res) => {
     }
 };
 
+const getBedsByHouse = async (req, res) => {
+    try {
+        const { houseId } = req.params;
+        const beds = await Bed.find({ house: houseId });
+        res.status(200).json(beds);
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi khi lấy danh sách giường", error });
+    }
+};
+
 // Thêm nhà trọ mới
 const createHouse = async (req, res) => {
     try {
         console.log(req.body);
-        const { name, address, status } = req.body;
-        const newHouse = new House({ name, address, status });
+        const { name, address, status, type } = req.body;
+        const newHouse = new House({ name, address, status, type });
         await newHouse.save();
         res.status(201).json(newHouse);
     } catch (error) {
@@ -48,4 +64,16 @@ const getHouseRooms = async (req, res) => {
     }
 };
 
-module.exports = { getHouses, getHouseRooms, createHouse, getHouseInfo };
+const addBedsByHouse = async (req, res) => {
+    try {
+        console.log(req.body);
+        const { houseId, name, status } = req.body;
+        const newBed = new Bed({ house: houseId, name, status });
+        await newBed.save();
+        res.status(201).json(newBed);
+    } catch (error) {
+        res.status(400).json({ message: "Lỗi khi thêm giường", error });
+    }
+};
+
+module.exports = { getHouses, getHouseRooms, createHouse, getHouseInfo, getBedsByHouse, addBedsByHouse };
