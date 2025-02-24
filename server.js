@@ -21,7 +21,7 @@ const bedRoutes = require("./routes/bedRoutes");
 const taskRoutes = require("./routes/taskRoutes"); // ✅ Thêm routes quản lý nhiệm vụ
 const expenseRoutes = require("./routes/expenseRoutes"); // ✅ Thêm routes quản lý chi phí
 const employeeRoutes = require("./routes/employeeRoutes");
-
+const authRoutes = require("./routes/authRoutes");
 
 // Định nghĩa các endpoint
 app.use("/api/houses", houseRoutes);
@@ -30,6 +30,7 @@ app.use("/api/beds", bedRoutes);
 app.use("/api/tasks", taskRoutes); // ✅ API nhiệm vụ
 app.use("/api/expenses", expenseRoutes); // ✅ API chi phí
 app.use("/api/employees", employeeRoutes);
+app.use("/api/auth", authRoutes);
 
 // Lắng nghe kết nối
 app.listen(PORT, () => console.log(`🚀 Server is running on port ${PORT}`));

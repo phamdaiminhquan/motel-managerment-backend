@@ -12,11 +12,6 @@ const getHouses = async (req, res) => {
     }
 };
 
-/**
- * Lấy thông tin của 1 nhà trọ
- * @param {string} req.params.houseId - id của nhà trọ
- * @return {object} - Thông tin của nhà trọ
- */
 const getHouseInfo = async (req, res) => {
     try {
         const { houseId } = req.params;
@@ -64,10 +59,32 @@ const getHouseRooms = async (req, res) => {
     }
 };
 
+// API thêm phòng vào nhà
+const addRoomByHouse = async (req, res) => {
+    try {
+        const { houseId } = req.params;
+        const { name, type, price } = req.body;
+
+        // check houseId is valid
+        const house = await House.findById(houseId);
+        if (!house) {
+            return res.status(404).json({ message: "ID nhà trọ không hợp lệ" });
+        }
+
+        // save new room
+        const newRoom = new Room({ house: houseId, name, type, price });
+        await newRoom.save();
+        res.status(201).json(newRoom);
+    } catch (error) {
+        res.status(400).json({ message: "Lỗi khi thêm phòng", error });
+    }
+};
+
 const addBedsByHouse = async (req, res) => {
     try {
         console.log(req.body);
-        const { houseId, name, status } = req.body;
+        const { houseId } = req.params;
+        const { name, status } = req.body;
         const newBed = new Bed({ house: houseId, name, status });
         await newBed.save();
         res.status(201).json(newBed);
@@ -76,4 +93,4 @@ const addBedsByHouse = async (req, res) => {
     }
 };
 
-module.exports = { getHouses, getHouseRooms, createHouse, getHouseInfo, getBedsByHouse, addBedsByHouse };
+module.exports = { getHouses, getHouseRooms, createHouse, getHouseInfo, getBedsByHouse, addBedsByHouse, addRoomByHouse };
